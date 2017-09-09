@@ -11,9 +11,15 @@ extension Signal {
 	/// (typically from a Signal).
 	public final class Observer {
 		public typealias Action = (Event) -> Void
+		private let _action: Action
 
 		/// An action that will be performed upon arrival of the event.
-		public let action: Action
+		public var action: Action {
+			guard !interruptsOnDeinit && wrapped == nil else {
+				return { self._action($0) }
+			}
+			return _action
+		}
 
 		/// Whether the observer should send an `interrupted` event as it deinitializes.
 		private let interruptsOnDeinit: Bool
@@ -40,9 +46,9 @@ extension Signal {
 		) {
 			var hasDeliveredTerminalEvent = false
 
-			self.action = transform { event in
+			self._action = transform { event in
 				if !hasDeliveredTerminalEvent {
-					observer.action(event)
+					observer._action(event)
 
 					if event.isTerminating {
 						hasDeliveredTerminalEvent = true
@@ -63,7 +69,7 @@ extension Signal {
 		///   - interruptsOnDeinit: `true` if the observer should send an `interrupted`
 		///                         event as it deinitializes. `false` otherwise.
 		internal init(action: @escaping Action, interruptsOnDeinit: Bool) {
-			self.action = action
+			self._action = action
 			self.wrapped = nil
 			self.interruptsOnDeinit = interruptsOnDeinit
 		}
@@ -74,7 +80,7 @@ extension Signal {
 		/// - parameters:
 		///   - action: A closure to lift over received event.
 		public init(_ action: @escaping Action) {
-			self.action = action
+			self._action = action
 			self.wrapped = nil
 			self.interruptsOnDeinit = false
 		}
@@ -128,7 +134,7 @@ extension Signal {
 				// Since `Signal` would ensure that only one terminal event would ever be
 				// sent for any given `Signal`, we do not need to assert any condition
 				// here.
-				action(.interrupted)
+				_action(.interrupted)
 			}
 		}
 
@@ -137,7 +143,7 @@ extension Signal {
 		/// - parameters:
 		///   - value: A value sent with the `value` event.
 		public func send(value: Value) {
-			action(.value(value))
+			_action(.value(value))
 		}
 
 		/// Puts a failed event into `self`.
@@ -145,17 +151,17 @@ extension Signal {
 		/// - parameters:
 		///   - error: An error object sent with failed event.
 		public func send(error: Error) {
-			action(.failed(error))
+			_action(.failed(error))
 		}
 
 		/// Puts a `completed` event into `self`.
 		public func sendCompleted() {
-			action(.completed)
+			_action(.completed)
 		}
 
 		/// Puts an `interrupted` event into `self`.
 		public func sendInterrupted() {
-			action(.interrupted)
+			_action(.interrupted)
 		}
 	}
 }
