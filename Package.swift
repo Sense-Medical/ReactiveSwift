@@ -9,7 +9,7 @@ let package = Package(
     name: "ReactiveSwift",
     dependencies: {
         var deps: [Package.Dependency] = [
-            .Package(url: "https://github.com/Sense-Medical/Result.git", "3.2.3"),
+            .Package(url: "https://github.com/Sense-Medical/Result.git", "3.2.3-cortex"),
         ]
         if isSwiftPackagerManagerTest {
             deps += [
