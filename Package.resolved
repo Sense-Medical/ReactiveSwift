@@ -21,11 +21,11 @@
       },
       {
         "package": "Result",
-        "repositoryURL": "https://github.com/antitypical/Result.git",
+        "repositoryURL": "https://github.com/Sense-Medical/Result.git",
         "state": {
-          "branch": null,
-          "revision": "c8446185238659a2b27c0261f64ff1254291d07d",
-          "version": "3.2.3"
+          "branch": "cortex",
+          "revision": "d0e7cc75c23a23127129e797e96f807c263c069d",
+          "version": null
         }
       }
     ]

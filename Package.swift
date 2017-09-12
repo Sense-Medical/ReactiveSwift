@@ -1,23 +1,21 @@
+// swift-tools-version:4.0
+
 import Foundation
 import PackageDescription
 
-var isSwiftPackagerManagerTest: Bool {
-    return ProcessInfo.processInfo.environment["SWIFTPM_TEST_ReactiveSwift"] == "YES"
-}
 
 let package = Package(
     name: "ReactiveSwift",
-    dependencies: {
-        var deps: [Package.Dependency] = [
-            .Package(url: "https://github.com/Sense-Medical/Result.git", "3.2.3-cortex"),
-        ]
-        if isSwiftPackagerManagerTest {
-            deps += [
-                .Package(url: "https://github.com/Quick/Quick.git", majorVersion: 1, minor: 1),
-                .Package(url: "https://github.com/Quick/Nimble.git", majorVersion: 7),
-            ]
-        }
-        return deps
-    }(),
-    swiftLanguageVersions: [3, 4]
+    products: [
+        .library(name: "ReactiveSwift", targets: ["ReactiveSwift"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/Sense-Medical/Result.git", .branch("cortex")),
+        .package(url: "https://github.com/Quick/Quick.git", .upToNextMinor(from: "1.1.0")),
+        .package(url: "https://github.com/Quick/Nimble.git", .upToNextMinor(from: "7.0.0"))
+    ],
+    targets: [
+        .target(name: "ReactiveSwift", dependencies: ["Result"], path: "Sources"),
+        .testTarget(name: "ReactiveSwiftTests", dependencies: ["ReactiveSwift", "Nimble", "Quick"], path: "Tests/ReactiveSwiftTests")
+    ]
 )
