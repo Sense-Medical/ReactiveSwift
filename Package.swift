@@ -11,8 +11,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Sense-Medical/Result.git", .branch("cortex")),
-        .package(url: "https://github.com/Sense-Medical/Quick.git", .upToNextMinor(from: "1.1.0")),
-        .package(url: "https://github.com/Sense-Medical/Nimble.git", .upToNextMinor(from: "7.0.0"))
+        .package(url: "https://github.com/Sense-Medical/Quick.git", .branch("cortex")),
+        .package(url: "https://github.com/Sense-Medical/Nimble.git", .branch("cortex"))
     ],
     targets: [
         .target(name: "ReactiveSwift", dependencies: ["Result"], path: "Sources"),
